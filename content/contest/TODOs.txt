@@ -1,0 +1,9 @@
+- Add ecnerwala's faster hash map
+- Geo add half-plan inter, ask sub what to add (section 7)
+- tarjan??
+- adjust font if needed 
+Sections
+- Data structures (section 2)
+- Graphs (section 6)
+- Strings (section 8)
+

@@ -1,30 +1,46 @@
 /**
- * Author: Lucian Bicsi
- * Date: 2017-10-31
+ * Author: 
+ * Date: 
  * License: CC0
- * Source: folklore
- * Description: Zero-indexed max-tree. Bounds are inclusive to the left and exclusive to the right. Can be changed by modifying T, LOW and f.
- * Time: O(\log N)
- * Status: fuzz-tested
+ * Source: 
+ * Description: 
+ * Time: 
  */
-#pragma once
+#define lson(x) 2*x+1
+#define rson(x) 2*x+2
+
+struct node {
+    ll sum;
+    void add(int val) {
+        sum += val;
+    }
+};
+
+node merge(node L, node R) {
+    return {L.sum + R.sum};
+}
 
 struct Tree {
-	typedef int T;
-	static const T LOW = INT_MIN;
-	T f(T a, T b) { return max(a, b); } // (any associative fn)
-	vector<T> s; int n;
-	Tree(int n = 0, T def = 0) : s(2*n, def), n(n) {}
-	void update(int pos, T val) {
-		for (s[pos += n] = val; pos > 1; pos /= 2)
-			s[pos / 2] = f(s[pos & ~1], s[pos | 1]);
-	}
-	T query(int b, int e) { // query [b, e)
-		T ra = LOW, rb = LOW;
-		for (b += n, e += n; b < e; b /= 2, e /= 2) {
-			if (b % 2) ra = f(ra, s[b++]);
-			if (e % 2) rb = f(s[--e], rb);
-		}
-		return f(ra, rb);
-	}
-};
+    node dat[4 * N];
+    void init(int x, int l, int r) {
+        if(l == r) {dat[x] = {a[l]}; return ;}
+        int mid = (l + r) / 2;
+        init(lson(x), l, mid);
+        init(rson(x), mid + 1, r);
+        dat[x] = merge(dat[lson(x)], dat[rson(x)]);
+    }
+    void update(int pos, int x, int l, int r, int val) {
+        if(l == r) {dat[x].add(val); return ;}
+        int mid = (l + r) / 2;
+        if(pos <= mid) update(pos, lson(x), l, mid, val);
+        else update(pos, rson(x), mid + 1, r, val);
+        dat[x] = merge(dat[lson(x)], dat[rson(x)]);
+    }
+    node query(int a, int b, int x, int l, int r) {
+        if(r < a || b < l) return {0};
+        int mid = (l + r) / 2;
+        if(a <= l && r <= b) return dat[x];
+        else return merge(query(a, b, lson(x), l, mid),
+                          query(a, b, rson(x), mid + 1, r));
+    }
+} tree;

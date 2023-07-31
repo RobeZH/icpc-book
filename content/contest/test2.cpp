@@ -1,11 +1,3 @@
-/**
- * Author: 
- * Date: 
- * License: CC0
- * Source: 
- * Description:  
- * Time: 
- */
 const int M = (int)5e5 + 500;
 
 struct Trie {
@@ -14,7 +6,7 @@ struct Trie {
     int root, L;
 
     int newnode() {
-        rep(i, 0, B) next[L][i] = -1;
+        for (int i = 0; i < B; i++) next[L][i] = -1;
         end[L++] = 0;
         return L - 1;
     }
@@ -24,21 +16,20 @@ struct Trie {
         root = newnode();
     }
 
-   void insert(const string &buf) {
-        int len = sz(buf);
+    void insert(const string &buf) {
+        int len = buf.length();
         int now = root;
-        rep(i, 0, len) {
-            int &nxt = next[now][buf[i] - 'a'];
-            if(nxt == -1) nxt = newnode();
-            now = nxt;
+        for (int i = 0; i < len; i++) {
+            if (next[now][buf[i] - 'a'] == -1) next[now][buf[i] - 'a'] = newnode();
+            now = next[now][buf[i] - 'a'];
         }
-        end[now] = 1;
+        end[now] ++;
     }
 
     void build() {
         queue<int> Q;
         fail[root] = root;
-        rep(i, 0, B) {
+        for (int i = 0; i < B; i++) {
             if (next[root][i] == -1) next[root][i] = root;
             else {
                 fail[next[root][i]] = root;
@@ -48,7 +39,7 @@ struct Trie {
         while (!Q.empty()) {
             int now = Q.front();
             Q.pop();
-            rep(i, 0, B) {
+            for (int i = 0; i < B; i++) {
                 if (next[now][i] == -1) next[now][i] = next[fail[now]][i];
                 else{
                     fail[next[now][i]] = next[fail[now]][i];
