@@ -2,6 +2,12 @@
 - Geo add half-plan inter, ask sub what to add (section 7)
 - tarjan??
 - adjust font if needed 
+- test bit more for compressedTree.h
+- Get familiar with blossom
+- add assignment for 2SAT
+
+
+
 Sections
 - Data structures (section 2)
 - Graphs (section 6)

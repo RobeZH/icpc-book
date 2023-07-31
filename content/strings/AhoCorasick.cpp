@@ -4,7 +4,7 @@
  * License: CC0
  * Source: 
  * Description:  
- * Time: 
+ * Time: Init, and insert strings, and then build. Remember to propagate information to from fail link.
  */
 const int M = (int)5e5 + 500;
 
