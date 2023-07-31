@@ -9,15 +9,13 @@
 
 struct Manacher {
     string s, sn;
-    int p[2*MAXN];
+    int p[2*N];
 
     int Init() {
         int len = s.length();
         sn = "$#";
-        int j = 2;
 
-        for (int i = 0; i < len; i++)
-        {
+        for (int i = 0; i < len; i++) {
             sn.push_back(s[i]);
             sn.push_back('#');
         }
@@ -44,15 +42,11 @@ struct Manacher {
             while (sn[i - p[i]] == sn[i + p[i]])
                 p[i]++;
 
-            if (mx < i + p[i])
-            {
-                id = i;
-                mx = i + p[i];
-            }
+            if (mx < i + p[i]) id = i, mx = i + p[i];
 
             max_len = max(max_len, p[i] - 1);
         }
 
         return max_len;
     }
-}mnc;
+} mnc;

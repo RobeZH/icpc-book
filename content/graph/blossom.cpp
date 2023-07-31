@@ -1,19 +1,13 @@
 /**
- * Description: Variant on Gabow's Impl of Edmond's Blossom Algorithm. 
+  	* Author: 
+    * Date: 
+    * License: CC0
+    * Source: 
+    * Description: Variant on Gabow's Impl of Edmond's Blossom Algorithm. 
     * General unweighted max matching with 1-based indexing. If 
     * \texttt{white[v] = 0} after \texttt{solve()} returns, \texttt{v} is part
     * of every max matching.
  * Time: O(NM), faster in practice
- * Source: 
-	* https://github.com/koosaga/DeobureoMinkyuParty
-	* https://www-m9.ma.tum.de/graph-algorithms/matchings-blossom-algorithm/index_en.html
-	* https://codeforces.com/blog/entry/63630
-	* https://github.com/yosupo06/library-checker-problems/blob/master/graph/general_matching/sol/correct.cpp
-	* https://web.eecs.umich.edu/~pettie/matching/Gabow-general-matching-1976.pdf
- * Verification: 
- 	* https://codeforces.com/contest/1089 B
- 	* https://www.codechef.com/problems/HAMILG
- 	* https://judge.yosupo.jp/problem/general_matching
  */
 
 struct MaxMatching {

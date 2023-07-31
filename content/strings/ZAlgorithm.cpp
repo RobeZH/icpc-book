@@ -9,11 +9,9 @@
 
 const int MAXN = (int)1e6 + 500;
 
-string s;
-int z[MAXN],cnt[MAXN];
+int z[MAXN];
 
-void getZarr(string str)
-{
+void getZarr(string str) { /// start-hash
     memset(z, 0, sizeof(z));
     int n = str.length();
     for(int i = 1, l = 0, r = 0; i < n; ++i){
@@ -24,4 +22,4 @@ void getZarr(string str)
         if(i + z[i] - 1 > r)
             l = i,  r = i + z[i] - 1;
     }
-}
+} /// end-hash

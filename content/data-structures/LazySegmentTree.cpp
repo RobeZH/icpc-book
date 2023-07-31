@@ -10,6 +10,14 @@
 #define ls(x) x * 2 + 1
 #define rs(x) x * 2 + 2
 
+typedef long long ll;
+const int N = (int)1e6 + 50;
+int INF = (int)1e9 + 50;
+
+int n,m,q;
+int a[N], b[N];
+int num[N];
+
 struct node {
     int mn, add;
 
@@ -36,7 +44,7 @@ struct Tree {
         }
     }
 
-    void init(int x = 0, int l = 0, int r = n-1) {
+    void init(int x, int l, int r) {
         if(l == r) {
             dat[x].mn = num[l];
             dat[x].add = 0;
@@ -49,7 +57,7 @@ struct Tree {
         dat[x].merge(dat[ls(x)], dat[rs(x)]);
     }
 
-    node query(int a, int b, int x = 0, int l = 0, int r = N-1) {
+    node query(int a, int b, int x, int l, int r) {
         int mid = (l + r) / 2;
         if(r < a || l > b) return {INF, 0};
 

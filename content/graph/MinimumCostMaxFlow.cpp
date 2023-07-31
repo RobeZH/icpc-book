@@ -16,6 +16,8 @@ struct MincostFlow {
     vector<vector<edge>> G;
     vi h, dist, prevv, preve;
 
+    MincostFlow(int n = 0): G(n), h(n), dist(n), prevv(n), preve(n) {}
+
     void add_edge(int from, int to, int cap, int cost){
         G[from].push_back((edge){to, cap, cost, (int)G[to].size()});
         G[to].push_back((edge){from, 0, -cost, (int)G[from].size() - 1});
@@ -64,4 +66,4 @@ struct MincostFlow {
         return res;
     }
 
-} mf;
+} ;

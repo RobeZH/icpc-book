@@ -19,7 +19,7 @@ struct Node {
     }
     void recalc();
     void push_down();
-}
+};
 
 int cnt(Node* n) {return n ? n->c : 0;}
 void Node::recalc() {c = cnt(l) + cnt(r) + 1;}
@@ -89,12 +89,12 @@ Node* find(Node *cur, int k) {
     else return find(cur->r, k - cnt(cur->l) - 1);
 }
 typedef pair<Node*, int> pni;
-pni lower_bound(Node *cur, pii v, int pos) { // return {the ,→ Node*, position}; {NULL, n} in case of .end()
+pni lower_bound(Node *cur, pii v, int pos) { // return {the Node*, position}; {NULL, n} in case of .end()
     if(!cur) return {0, pos};
     cur->push_down();
     if(cur->v >= v) {
         auto res = lower_bound(cur->l, v, pos);
         if(res.first) return res;
         else return {cur, pos + cnt(cur->l)};
-	} else return lower_bound(cur->r, v, pos + cnt(cur->l) ,→+ 1);
+	} else return lower_bound(cur->r, v, pos + cnt(cur->l) + 1);
 } /// end-hash

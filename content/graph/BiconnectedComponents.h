@@ -4,7 +4,7 @@
  * License: CC0
  * Source: 
  * Description: 
- * Time: $O(E + V)
+ * Time: $O(E + V)$
  */
 
 int cur, num[maxn], low[maxn];

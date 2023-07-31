@@ -5,7 +5,8 @@
 - test bit more for compressedTree.h
 - Get familiar with blossom
 - add assignment for 2SAT
-
+- test dominator tree
+- find PAM template 
 
 
 Sections

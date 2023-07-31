@@ -36,6 +36,7 @@ struct Hull {
 
     // Arbitrary x.
     ll query_bin(ll x) {
+        if(que.empty()) return -INF;
         int l = 0, r = que.size() - 1;
         while(l < r) {
             int mi = (l + r) / 2;
@@ -47,6 +48,7 @@ struct Hull {
 
     // If querying increasing x.
     ll query(ll x) {
+        if(que.empty()) return -INF;
         while(que.size() > 1) {
             if(que[0].k * x + que[0].m < que[1].k * x + que[1].m) que.pop_front();
             else break;

@@ -36,10 +36,8 @@ struct SCC {
         for(int v = 0; v < n; v++) if(!used[v]) dfs(v);
         fill(all(used), 0);
         int k = 0;
-        reverse(vs.begin(), vs.end());
+        reverse(all(vs));
         for(int v : vs) if(!used[v]) rdfs(v, k++);
         return k;
     }
-
-
-}
+};
