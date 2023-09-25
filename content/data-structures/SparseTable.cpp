@@ -3,32 +3,27 @@
  * Date: 
  * License:
  * Source: 
- * Description: sparse table for range minimum
+ * Description: sparse table for range minimum, query is inclusive.
  * Time: 
  */
 
+template<class T>
 struct RMQ {
-    vector<vi> st;
-    vi mm;
- 
-    RMQ(vi &x) {
-        int n = sz(x);
-        mm.resize(n + 1);
-        mm[0] = -1;
-        rep(i, 1, n + 1) mm[i]= (i & (i-1)) == 0 ? mm[i-1] + 1 : mm[i-1];
-        int LG = 0;
-        while((1 << LG) <= n) LG++;
-        st.resize(LG, vi(n));
-        rep(i, 0, n) st[0][i] = x[i];
-        for(int lg = 1; lg < LG; lg++){
-            for(int j = 0; j + (1 << lg) - 1 < n; j++) {
-                st[lg][j] = min(st[lg - 1][j], st[lg - 1][j + (1 << (lg - 1))]);
-            }
-        }
-    }
+	vector<vector<T>> jmp;
 
-    int rmq(int l, int r) {
-        int k = mm[r - l + 1];
-        return min(st[k][l], st[k][r - (1 << k) + 1]);
-    }
+	RMQ(const vector<T>& V) {
+		int N = sz(V), on = 1, depth = 1;
+		while (on < sz(V)) on *= 2, depth++;
+		jmp.assign(depth, V);
+		rep(i,0,depth-1) rep(j,0,N)
+			jmp[i+1][j] = min(jmp[i][j],
+			jmp[i][min(N - 1, j + (1 << i))]);
+	}
+
+	T query(int a, int b) {
+		b++;
+		assert(a < b); // or return inf if a == b
+		int dep = 31 - __builtin_clz(b - a);
+		return min(jmp[dep][a], jmp[dep][b - (1 << dep)]);
+	}
 };
