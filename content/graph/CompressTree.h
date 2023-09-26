@@ -24,7 +24,7 @@ auto build_virtual_tree = [&](vi S) {
     sort(all(S), [&](int u,int v) {return lca.time[u] < lca.time[v];});
     S.resize(unique(all(S)) - S.begin());
     int sz = 0;
-    stk[++sz] = 0;
+    stk[++sz] = 0; // root
     for(auto u : S) {
         int x = lca.query(u, stk[sz]);
         vir.push_back(u); vir.push_back(x);
