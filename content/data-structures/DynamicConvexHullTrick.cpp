@@ -3,7 +3,7 @@
  * Date: 
  * License: CC0
  * Source: 
- * Description: 
+ * Description: Query will return the maximum of the lines. 
  * Time:
  */
 

@@ -6,7 +6,6 @@
  * Description: Finding the SCCs of the graph (Kosaraju’s algorithm), cmp is the topo order of the SCCs
  * Time: 
  */
-
 struct SCC {
     vector<vi> G, rG;
     vi vs, used, cmp;
@@ -33,7 +32,7 @@ struct SCC {
     int scc(){
         fill(all(used), 0);
         vs.clear();
-        for(int v = 0; v < n; v++) if(!used[v]) dfs(v);
+        rep(v, 0, n) if(!used[v]) dfs(v);
         fill(all(used), 0);
         int k = 0;
         reverse(all(vs));

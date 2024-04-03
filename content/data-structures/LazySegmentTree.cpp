@@ -7,87 +7,77 @@
  * Time: 
  */
 
-#define ls(x) x * 2 + 1
-#define rs(x) x * 2 + 2
-
-typedef long long ll;
-const int N = (int)1e6 + 50;
-int INF = (int)1e9 + 50;
-
-int n,m,q;
-int a[N], b[N];
-int num[N];
+#define lson(x) x * 2 + 1
+#define rson(x) x * 2 + 2
 
 struct node {
-    int mn, add;
+    ll sum, add;
 
-    void add_val(int x) {
-        mn += x;
-        add += x;
+    void add_val(ll x, ll len) {
+        (add += x) %= mod;
+        (sum += len * x) %= mod;
     }
 
     void merge(node &ls, node &rs) {
-        mn = min(ls.mn, rs.mn);
+        sum = (ls.sum + rs.sum) % mod;
     }
 };
 
 struct Tree {
-    node dat[4 * N];
+    int n;
+    vector<node> dat;
+    Tree(int n): dat(n * 4), n(n) {}
 
     void push_down(int x, int l, int r) {
         if(dat[x].add) {
             if(l < r) {
-                dat[ls(x)].add_val(dat[x].add);
-                dat[rs(x)].add_val(dat[x].add);
+                int mid = (r + l) / 2;
+                dat[lson(x)].add_val(dat[x].add, mid - l + 1);
+                dat[rson(x)].add_val(dat[x].add, r - mid);
             }
             dat[x].add = 0;
         }
     }
 
-    void init(int x, int l, int r) {
+    void init(int x, int l, int r, vi &a) {
         if(l == r) {
-            dat[x].mn = num[l];
-            dat[x].add = 0;
+            dat[x].sum = a[l] % mod, dat[x].add = 0;
             return ;
         }
         int mid = (l + r) / 2;
-        init(ls(x), l, mid);
-        init(rs(x), mid + 1, r);
+        init(lson(x), l, mid, a);
+        init(rson(x), mid + 1, r, a);
         dat[x].add = 0;
-        dat[x].merge(dat[ls(x)], dat[rs(x)]);
+        dat[x].merge(dat[lson(x)], dat[rson(x)]);
     }
 
-    node query(int a, int b, int x, int l, int r) {
+    ll query(int a, int b, int x, int l, int r) {
         int mid = (l + r) / 2;
-        if(r < a || l > b) return {INF, 0};
-
+        if(r < a || l > b) return 0;
         push_down(x, l, r);
-
-        if(l >= a && r <= b) return dat[x];
-
-        node LHS = query(a, b, ls(x), l, mid);
-        node RHS = query(a, b, rs(x), mid+1, r);
-        node res;
-        res.merge(LHS, RHS);
-        return res;
+        if(l >= a && r <= b) return dat[x].sum;
+        return (query(a, b, lson(x), l, mid) + query(a, b, rson(x), mid+1, r)) % mod;
     }
 
     void update(int a, int b, int x, int l, int r, int delta) {
         int mid = (l + r) / 2;
         if(r < a || l > b) return ;
-
         push_down(x, l, r);
-
         if(l >= a && r <= b) {
-            dat[x].add_val(delta);
+            dat[x].add_val(delta, r - l + 1);
             return ;
         }
-
-        update(a, b, ls(x), l, mid, delta);
-        update(a, b, rs(x), mid+1, r, delta);
-
-        dat[x].merge(dat[ls(x)], dat[rs(x)]);
+        update(a, b, lson(x), l, mid, delta);
+        update(a, b, rson(x), mid+1, r, delta);
+        dat[x].merge(dat[lson(x)], dat[rson(x)]);
     }
-} tree;
+
+    ll qry(int a, int b) {
+        return query(a, b, 0, 0, n - 1);
+    }
+    void upd(int a, int b, int d) {
+        update(a, b, 0, 0, n - 1, d);
+    }
+} ;
 
 

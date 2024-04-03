@@ -27,7 +27,6 @@ struct SAT {
         rep(i, 0, nvars) {
             if(scc.cmp[i] == scc.cmp[i + nvars]) return false;
         }
-
         return true;
     }
 };

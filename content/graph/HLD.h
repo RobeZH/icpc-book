@@ -13,100 +13,59 @@
  *  tie(value, lca) = hld.query(n1, n2);
  * Status: Tested at SPOJ
  */
-#pragma once
-
-#include "../data-structures/SegmentTree.h"
-
-typedef vector<pii> vpi;
-
-struct Node {
-	int d, par, val, chain = -1, pos = -1;
-};
-
-struct Chain {
-	int par, val;
-	vector<int> nodes;
-	Tree tree;
-};
+typedef vector<vi> graph;
 
 struct HLD {
-	typedef int T;
-	const T LOW = -(1<<29);
-	void f(T& a, T b) { a = max(a, b); }
+    int n, chainNo, tim;
+    Tree tree;
+    vi top, din, dout, ord, dep, sub, par;
+    graph g;
+    HLD(graph &g, int rt = 0): g(g), tree(sz(g)) {
+        n = sz(g);
+        top = din = dout = ord = dep = sub = par = vi(n);
+        chainNo = tim = 0;
+        fill(all(din), -1);
+        dfs(rt, -1, 0);
+        hld(rt, -1, rt);
+    }
 
-	vector<Node> V;
-	vector<Chain> C;
+    void dfs(int v, int p, int d){
+        par[v] = p;
+        sub[v] = 1;
+        dep[v] = d;
+        for(int &nxt : g[v]){
+            if(nxt == p) continue;
+            dfs(nxt, v, d + 1);
+            sub[v] += sub[nxt];
+            if(g[v][0] == p || sub[nxt] > sub[g[v][0]])
+                swap(nxt, g[v][0]);
+        }
+    }
 
-	HLD(vector<vpi>& g) : V(sz(g)) {
-		dfs(0, -1, g, 0);
-		trav(c, C) {
-			c.tree = {sz(c.nodes), 0};
-			for (int ni : c.nodes)
-				c.tree.update(V[ni].pos, V[ni].val);
-		}
-	}
+    void hld(int v, int p, int tp) {
+        top[v] = tp;
+        din[v] = tim;
+        ord[tim++] = v;
+        for (auto nxt: g[v]) {
+            if (nxt == p) continue;
+            if (nxt != g[v][0]) {
+                chainNo++; hld(nxt, v, nxt);
+            } else hld(nxt, v, tp);
+        }
+        dout[v] = tim - 1;
+    }
 
-	void update(int node, T val) {
-		Node& n = V[node]; n.val = val;
-		if (n.chain != -1) C[n.chain].tree.update(n.pos, val);
-	}
-
-	int pard(Node& nod) {
-		if (nod.par == -1) return -1;
-		return V[nod.chain == -1 ? nod.par : C[nod.chain].par].d;
-	}
-
-	// query all *edges* between n1, n2
-	pair<T, int> query(int i1, int i2) {
-		T ans = LOW;
-		while(i1 != i2) {
-			Node n1 = V[i1], n2 = V[i2];
-			if (n1.chain != -1 && n1.chain == n2.chain) {
-				int lo = n1.pos, hi = n2.pos;
-				if (lo > hi) swap(lo, hi);
-				f(ans, C[n1.chain].tree.query(lo, hi));
-				i1 = i2 = C[n1.chain].nodes[hi];
-			} else {
-				if (pard(n1) < pard(n2))
-					n1 = n2, swap(i1, i2);
-				if (n1.chain == -1)
-					f(ans, n1.val), i1 = n1.par;
-				else {
-					Chain& c = C[n1.chain];
-					f(ans, n1.pos ? c.tree.query(n1.pos, sz(c.nodes))
-					              : c.tree.s[1]);
-					i1 = c.par;
-				}
-			}
-		}
-		return make_pair(ans, i1);
-	}
-
-	// query all *nodes* between n1, n2
-	pair<T, int> query2(int i1, int i2) {
-		pair<T, int> ans = query(i1, i2);
-		f(ans.first, V[ans.second].val);
-		return ans;
-	}
-
-	pii dfs(int at, int par, vector<vpi>& g, int d) {
-		V[at].d = d; V[at].par = par;
-		int sum = 1, ch, nod, sz;
-		tuple<int,int,int> mx(-1,-1,-1);
-		trav(e, g[at]){
-			if (e.first == par) continue;
-			tie(sz, ch) = dfs(e.first, at, g, d+1);
-			V[e.first].val = e.second;
-			sum += sz;
-			mx = max(mx, make_tuple(sz, e.first, ch));
-		}
-		tie(sz, nod, ch) = mx;
-		if (2*sz < sum) return pii(sum, -1);
-		if (ch == -1) { ch = sz(C); C.emplace_back(); }
-		V[nod].pos = sz(C[ch].nodes);
-		V[nod].chain = ch;
-		C[ch].par = at;
-		C[ch].nodes.push_back(nod);
-		return pii(sum, ch);
-	}
+    ll query(int a, int b) {
+        ll res = 0;
+        while(top[a] != top[b]) {
+            if(dep[top[a]] < dep[top[b]]) swap(a, b);
+            (res += tree.qry(din[top[a]], din[a])) %= mod;
+            a = par[top[a]];
+        }
+        if(din[a] > din[b]) swap(a, b);
+        // if querying edge, use tree.qry(din[a] + 1, din[b])
+        // lca is variable a
+        (res += tree.qry(din[a], din[b])) %= mod; 
+        return res;
+    }
 };

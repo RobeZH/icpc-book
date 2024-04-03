@@ -1,3 +1,7 @@
+// THINK/VERIFY about implementation before start to code, maybe there is easier one!!
+// read carefully! (input/output format, details, etc)
+
+// robezh
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -9,7 +13,24 @@ typedef long long ll;
 typedef pair<int, int> pii;
 typedef vector<int> vi;
 
+// sub
+#include <bits/stdc++.h>
+#define FR(i, n) for (int i=0; i<n;++i)
+#define eb emplace_back
+#define st first
+#define nd second
+using namespace std;
+namespace R=ranges;
+template<typename T>
+using func=function<T>;
+using ll = long long;
+using ld = long double;
+using i128=__int128;
+using pii = pair<int, int>;
+const int inf = 1e9 + 7;
+
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(NULL);
+
 }

@@ -21,12 +21,14 @@ node merge(node L, node R) {
 }
 
 struct Tree {
-    node dat[4 * N];
-    void init(int x, int l, int r) {
+    int n;
+    vector<node> dat;
+    Tree(int n): dat(n * 4) {}
+    void init(int x, int l, int r, vi &a) {
         if(l == r) {dat[x] = {a[l]}; return ;}
         int mid = (l + r) / 2;
-        init(lson(x), l, mid);
-        init(rson(x), mid + 1, r);
+        init(lson(x), l, mid, a);
+        init(rson(x), mid + 1, r, a);
         dat[x] = merge(dat[lson(x)], dat[rson(x)]);
     }
     void update(int pos, int x, int l, int r, int val) {
@@ -43,4 +45,4 @@ struct Tree {
         else return merge(query(a, b, lson(x), l, mid),
                           query(a, b, rson(x), mid + 1, r));
     }
-} tree;
+};
