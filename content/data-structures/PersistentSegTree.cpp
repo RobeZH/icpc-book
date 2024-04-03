@@ -1,7 +1,7 @@
 /**
  * Author: 
  * Date: 
- * Licedate: CC0
+ * License: CC0
  * Source: 
  * Description: 
  * Time:
