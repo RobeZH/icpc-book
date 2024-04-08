@@ -6,40 +6,21 @@
  * Description: 
  * Time: $O(|S| \log |S|)$
  */
-
-
 LCA lca(g);
-vi vir;
-vi stk(n + 1, 0);
-
-auto add_edge = [&](int u, int v, int w) {
-    w = lca.distance(u, v);
-    g2[u].push_back({v, w});
-    g2[v].push_back({u, w});
-};
-auto build_virtual_tree = [&](vi S) {
-    for(auto u : vir) g2[u].clear();
-    vir.clear();
-    vi S;
-    sort(all(S), [&](int u,int v) {return lca.time[u] < lca.time[v];});
-    S.resize(unique(all(S)) - S.begin());
-    int sz = 0;
-    stk[++sz] = 0; // root
-    for(auto u : S) {
-        int x = lca.query(u, stk[sz]);
-        vir.push_back(u); vir.push_back(x);
-        if(u == stk[sz]) continue;
-        if(x != stk[sz]) {
-            while(sz >= 2 && lca.dep[stk[sz-1]] >= lca.dep[x]) {
-                add_edge(stk[sz-1], stk[sz]);
-                sz--;
-            }
-            if(x != stk[sz]) {
-                add_edge(x, stk[sz]);
-                stk[sz] = x;
-            }
-        }
-        stk[++sz] = u;
+graph vt(n);
+vi vers;
+auto build = [&](vi vs) {
+    for (int x : vers) vt[x].clear();
+    vers.clear();
+    
+    sort(all(vs), [&](int i, int j) {return lca.time[i] < lca.time[j];});
+    vi a = vs;
+    rep(i, 0, sz(vs) - 1) a.push_back(lca.lca(vs[i], vs[i + 1]));
+    sort(all(a), [&](int i, int j) {return lca.time[i] < lca.time[j];});
+    a.resize(unique(all(a)) - a.begin());
+    for (int x : a) vers.push_back(x);
+    rep(i, 0, sz(a) - 1) {
+        int ca = lca.lca(a[i], a[i + 1]);
+        add_edge(ca, a[i + 1]);
     }
-    for(int i=1;i<=sz-1;i++) add_edge(stk[i], stk[i+1]);
 };

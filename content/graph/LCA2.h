@@ -12,7 +12,7 @@
  *  LCA lca(undirGraph);
  *  lca.query(firstNode, secondNode);
  *  lca.distance(firstNode, secondNode);
- * Time: $O(N \log N + Q)$
+ * Time: $O(N \log N)$ time to build, $O(1)$ per query.
  */
 #pragma once
 
