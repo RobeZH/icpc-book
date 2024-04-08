@@ -1,5 +1,6 @@
 // THINK/VERIFY about implementation before start to code, maybe there is easier one!!
 // read carefully! (input/output format, details, etc)
+// read all (solvable) problems!!! the hardest problems might be easy for us.
 
 // robezh
 #include <bits/stdc++.h>

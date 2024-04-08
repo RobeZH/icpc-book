@@ -1,52 +1,24 @@
 /**
- * Author: 
- * Date: 
- * License: CC0
- * Source: 
- * Description: 
- * Time: 
+ * Author: User adamant on CodeForces
+ * Source: http://codeforces.com/blog/entry/12143
+ * Description: For each position in a string, computes p[0][i] = half length of
+ *  longest even palindrome around pos i, p[1][i] = longest odd (half rounded down).
+ * Time: O(N)
+ * Status: Fuzz-tested
  */
 
-struct Manacher {
-    string s, sn;
-    int p[2*N];
+typedef pair<vi, vi> pvi;
 
-    int Init() {
-        int len = s.length();
-        sn = "$#";
-
-        for (int i = 0; i < len; i++) {
-            sn.push_back(s[i]);
-            sn.push_back('#');
+pvi manacher(const string& s) {
+    int n = sz(s);
+    vi p[2] = {vi(n + 1), vi(n)};
+    rep(z, 0, 2) for (int i = 0, l = 0, r = 0; i < n; i++) {
+            int t = r - i + !z;
+            if (i < r) p[z][i] = min(t, p[z][l + t]);
+            int L = i - p[z][i], R = i + p[z][i] - !z;
+            while (L >= 1 && R + 1 < n && s[L - 1] == s[R + 1])
+                p[z][i]++, L--, R++;
+            if (R > r) l = L, r = R;
         }
-
-        sn.push_back('\0');
-
-        return sn.length();
-    }
-
-    int run() {
-        int len = Init(); 
-        int max_len = -1;
-
-        int id = 0;
-        int mx = 0;
-
-        for (int i = 1; i < len; i++)
-        {
-            if (i < mx)
-                p[i] = min(p[2 * id - i], mx - i);
-            else
-                p[i] = 1;
-
-            while (sn[i - p[i]] == sn[i + p[i]])
-                p[i]++;
-
-            if (mx < i + p[i]) id = i, mx = i + p[i];
-
-            max_len = max(max_len, p[i] - 1);
-        }
-
-        return max_len;
-    }
-} mnc;
+    return {p[0], p[1]};
+}
