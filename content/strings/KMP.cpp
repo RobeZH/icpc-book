@@ -3,7 +3,7 @@
  * Date: 
  * License: CC0
  * Source: 
- * Description: f[i]: the longest smaller prefix that is a suffix of t[1...i] (in length), one-index.
+ * Description: f[i]: the longest smaller prefix that is a suffix of t[1...i] (in length), one-index. f("bacba") = [0, 0, 0, 0, 1, 2]
  * Time: O(|t| + |s|)
  */
 

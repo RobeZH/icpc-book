@@ -1,10 +1,2 @@
-- Geo add half-plan inter, ask sub what to add (section 7)
-- find PAM template 
+- check PAM template 
 - vertex BCC, edge BCC
-
-
-Sections
-- Data structures (section 2)
-- Graphs (section 6)
-- Strings (section 8)
-

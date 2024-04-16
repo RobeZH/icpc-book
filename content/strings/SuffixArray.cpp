@@ -17,6 +17,7 @@
  */
 #pragma once
 
+/// start-hash
 struct SuffixArray {
 	vi sa, lcp, rank;
 	SuffixArray(string& s, int lim=256) { // or basic_string<int>
@@ -40,4 +41,12 @@ struct SuffixArray {
 			for (k && k--, j = sa[rank[i] - 1];
 					s[i + k] == s[j + k]; k++);
 	}
+};
+/// end-hash
+
+RMQ<int> rmq(sa.lcp);
+auto get_lcp = [&](int x, int y) {
+	x = sa.rank[x], y = sa.rank[y];
+	if(x > y) swap(x, y);
+	return rmq.query(x + 1, y);
 };

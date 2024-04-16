@@ -3,60 +3,86 @@
     * Date: 
     * License: CC0
     * Source: 
-    * Description: Variant on Gabow's Impl of Edmond's Blossom Algorithm. 
-    * General unweighted max matching with 1-based indexing. If 
-    * \texttt{white[v] = 0} after \texttt{solve()} returns, \texttt{v} is part
-    * of every max matching.
+    * Description: 1-indexed general matching
  * Time: O(NM), faster in practice
  */
 
-struct MaxMatching {
-	int N; V<vi> adj;
-	V<int> mate, first; vb white; vpi label;
-	void init(int _N) { N = _N; adj = V<vi>(N+1); 
-		mate = first = vi(N+1); label = vpi(N+1); white = vb(N+1); }
-	void ae(int u, int v) { adj.at(u).pb(v), adj.at(v).pb(u); }
-	int group(int x) { if (white[first[x]]) first[x] = group(first[x]);
-		return first[x]; }
-	void match(int p, int b) {
-		swap(b,mate[p]); if (mate[b] != p) return;
-		if (!label[p].s) mate[b] = label[p].f, match(label[p].f,b); // vertex label
-		else match(label[p].f,label[p].s), match(label[p].s,label[p].f); // edge label
-	}
-	bool augment(int st) { assert(st);
-		white[st] = 1; first[st] = 0; label[st] = {0,0};
-		queue<int> q; q.push(st);
-		while (!q.empty()) {
-			int a = q.ft; q.pop(); // outer vertex
-			each(b,adj[a]) { assert(b);
-				if (white[b]) { // two outer vertices, form blossom
-					int x = group(a), y = group(b), lca = 0;
-					while (x||y) {
-						if (y) swap(x,y);
-						if (label[x] == pi{a,b}) { lca = x; break; }
-						label[x] = {a,b}; x = group(label[mate[x]].first);
-					}
-					for (int v: {group(a),group(b)}) while (v != lca) {
-						assert(!white[v]); // make everything along path white
-						q.push(v); white[v] = true; first[v] = lca;
-						v = group(label[mate[v]].first);
-					}
-				} else if (!mate[b]) { // found augmenting path
-					mate[b] = a; match(a,b); white = vb(N+1); // reset
-					return true;
-				} else if (!white[mate[b]]) {
-					white[mate[b]] = true; first[mate[b]] = b;
-					label[b] = {0,0}; label[mate[b]] = pi{a,0};
-					q.push(mate[b]);
-				}
-			}
-		}
-		return false;
-	}
-	int solve() {
-		int ans = 0;
-		FOR(st,1,N+1) if (!mate[st]) ans += augment(st);
-		FOR(st,1,N+1) if (!mate[st] && !white[st]) assert(!augment(st));
-		return ans;
-	}
+struct MaxMatch {
+    vi vis, par, orig, match, aux;
+    int t, N;
+    vector<vi> adj;
+    queue<int> Q;
+
+    MaxMatch(int n): vis(n + 1), par(n + 1), orig(n + 1), match(n + 1), aux(n + 1), adj(n + 1), t(0), N(n) {}
+
+
+    void addEdge(int u, int v) {
+        assert(u && v);
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+
+    void augment(int u, int v) {
+        int pv = v, nv;
+        do {
+            pv = par[v]; nv = match[pv];
+            match[v] = pv; match[pv] = v;
+            v = nv;
+        } while(u != pv);
+    }
+
+    int lca(int v, int w) {
+        ++t;
+        while (1) {
+            if (v) {
+                if (aux[v] == t) return v; aux[v] = t;
+                v = orig[par[match[v]]];
+            }
+            swap(v, w);
+        }
+    }
+
+    void blossom(int v, int w, int a) {
+        while (orig[v] != a) {
+            par[v] = w; w = match[v];
+            if (vis[w] == 1) Q.push(w), vis[w] = 0;
+            orig[v] = orig[w] = a;
+            v = par[w];
+        }
+    }
+
+    bool bfs(int u) {
+        fill(vis.begin()+1, vis.begin()+1+N, -1);
+        iota(orig.begin() + 1, orig.begin() + N + 1, 1);
+        Q = queue<int> (); Q.push(u); vis[u] = 0;
+        while (sz(Q)) {
+            int v = Q.front(); Q.pop();
+            trav(x,adj[v]) {
+                if (vis[x] == -1) {
+                    par[x] = v; vis[x] = 1;
+                    if (!match[x]) return augment(u, x), true;
+                    Q.push(match[x]); vis[match[x]] = 0;
+                } else if (vis[x] == 0 && orig[v] != orig[x]) {
+                    int a = lca(orig[v], orig[x]);
+                    blossom(x, v, a); blossom(v, x, a);
+                }
+            }
+        }
+        return false;
+    }
+
+    int Match() {
+        int ans = 0;
+        // find random matching (not necessary, constant improvement)
+        vi V(N-1); iota(all(V), 1);
+        shuffle(all(V), mt19937(233333));
+        trav(x,V) if(!match[x])
+            trav(y,adj[x]) if (!match[y]) {
+            match[x] = y, match[y] = x;
+            ++ans; break;
+        }
+
+        rep(i,1,N+1) if (!match[i] && bfs(i)) ++ans;
+        return ans;
+    }
 };
